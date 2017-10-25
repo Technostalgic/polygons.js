@@ -11,7 +11,7 @@ The library currently includes these features:
 <li>polygon collision overlap detection</li>
 <li>polygon axis aligned bounding boxes</li>
 </ul>
-
+ 
 I plan on adding these features to the library eventually:
 <ul>
 <li>polygon boolean operations</li>
