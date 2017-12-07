@@ -9,7 +9,7 @@ The library currently includes these features:
 <li>rendering 2d polygons</li>
 <li>raycasting intersections with polygons</li>
 <li>polygon collision overlap detection</li>
-<li>polygon axis aligned bounding boxes</li>
+<li>axis aligned bounding boxes with efficient raycast collision detection</li>
 </ul>
  
 I plan on adding these features to the library eventually:
