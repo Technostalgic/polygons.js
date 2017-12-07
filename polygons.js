@@ -441,7 +441,7 @@ class ray{
 		this.recalculate();
 	}
 	getAngle(){
-		return this.angle;
+		return this._angle;
 	}
 	setAngle(angle){
 		//sets the angle that the ray points in
@@ -460,7 +460,7 @@ class ray{
 		return this._m;
 	}
 	getOffsetY(){
-		if(this.isVertical)
+		if(this._isVertical)
 			return this._m * -1 * Infinity;
 		return this._b;
 	}
@@ -504,33 +504,10 @@ class ray{
 				this.getPosition().distance(otherRay.getPosition()) > this.length + otherRay.length)
 			return null;
 		
+		if(this._isVertical) return this.intersect_vertical(otherRay);
+		if(otherRay._isVertical) return otherRay.intersect_vertical(this);
+		
 		var intersect = new vec2();
-		if(this._isVertical){
-			if(otherRay._isVertical)
-				return null;
-			//calculate vertical intersection
-			intersect.x = this._origin.x;
-			intersect.y = otherRay.getY(intersect.x);
-			
-			//ugly conditional bullshit below to assure that the collision point lies on the ray:
-			if(Math.sign(this._m) != Math.sign(intersect.y - this._origin.y))
-				return null;
-			if(!otherRay._isVertical){
-				if(Math.sign(intersect.x - otherRay._origin.x) != (Math.abs(otherRay._angle) < Math.PI / 2 ? 1 : -1))
-					return null;
-			}
-			else if(Math.sign(otherRay._m) != Math.sign(intersect.y - otherRay._origin.y))
-					return null;
-			if(intersect.distance(this._origin) > this.length)
-				return null;
-			if(intersect.distance(otherRay._origin) > otherRay.length)
-				return null;
-			
-			//if it passes the tests, we have a collision! :D
-			return intersect;
-		}
-		if(otherRay._isVertical)
-			return otherRay.intersection(this);
 		//calculate intersection
 		intersect.x = (otherRay._b - this._b) / (this._m - otherRay._m);
 		intersect.y = this._m * intersect.x + this._b;
@@ -549,6 +526,33 @@ class ray{
 		//if it passes the tests, we have a collision! :D
 		return intersect;
 	}
+	intersect_vertical(otherRay){
+		//parallel rays never intersect
+		if(otherRay._isVertical) return null;
+		
+		//calculate vertical intersection
+		var intersect = new vec2();
+		intersect.x = this._origin.x;
+		intersect.y = otherRay.getY(intersect.x);
+		
+		//ugly conditional bullshit below to assure that the collision point lies on the ray:
+		//make sure intersect is not behind ray
+		var thisDir = Math.sign(this._m);
+		var intDir = Math.sign(intersect.y - this._origin.y);
+		if(thisDir != intDir) return null;
+		
+		//make sure intersect distance is within the ray's specified length
+		var thisDist = intersect.distance(this._origin);
+		if(thisDist > this.length) return null;
+		
+		//make sure intersect distance is within the other ray's specified length
+		var otherDist = intersect.distance(otherRay._origin);
+		if(otherDist > otherRay.length) return null;
+		
+		//if it passes the tests, we have a collision! :D
+		return intersect;
+	}
+	
 	polygonCollision(poly){
 		if(!poly.getBoundingBox().testIntersect(this))
 			return [];
@@ -570,6 +574,14 @@ class ray{
 	
 	draw(ctx, color = "#f00", width = 1){
 		ctx.strokeStyle = color;
+		
+		ctx.lineWidth = width * 2;
+		ctx.beginPath();
+		ctx.moveTo(this.getPosition().x, this.getPosition().y);
+		var end = this.getPosition().plus(vec2.fromAng(this.getAngle(), this.length / 4));
+		ctx.lineTo(end.x, end.y);
+		ctx.stroke();
+		
 		ctx.lineWidth = width;
 		ctx.beginPath();
 		ctx.moveTo(this.getPosition().x, this.getPosition().y);
