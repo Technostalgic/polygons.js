@@ -48,6 +48,7 @@ function init(x, y){
 	data structure used for storing vectors,
 	also contains useful methods for doing vector math
 */
+
 class vec2{
 	constructor(x = 0, y = 0){
 		this.x = x;
