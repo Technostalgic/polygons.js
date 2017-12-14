@@ -516,18 +516,14 @@ class ray{
 		if(intersect.distance(otherRay._origin) > otherRay.length) return null;
 		
 		//just don't even ask. It's ugly. Basically this makes sure the intersection 
-		//is in front of the ray instead of behind it: (FIX!)
+		//point is in front of the ray instead of behind it:
 		var thisDir = Math.abs(this._angle) < Math.PI / 2 ? 1 : -1;
-		var intDir = intersect.x - this._origin.x;
+		var intDir = Math.sign(intersect.x - this._origin.x);
 		if(thisDir != intDir) return null;
 		
 		var otherDir = Math.abs(otherRay._angle) < Math.PI / 2 ? 1 : -1;
+		intDir = Math.sign(intersect.x - otherRay._origin.x);
 		if(otherDir != intDir) return null;
-		
-		//if(Math.sign(intersect.x - this._origin.x) != (Math.abs(this._angle) < Math.PI / 2 ? 1 : -1))
-		//	return null;
-		//if(Math.sign(intersect.x - otherRay._origin.x) != (Math.abs(otherRay._angle) < Math.PI / 2 ? 1 : -1))
-		//	return null;
 		
 		//if it passes the tests, we have a collision! :D
 		return intersect;
