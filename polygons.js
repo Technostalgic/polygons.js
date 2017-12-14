@@ -501,7 +501,7 @@ class ray{
 		//returns the intesection point between this and specified
 		//ray if there is one, otherwise returns null
 		if(this._angle === otherRay._angle ||	 //impossible collisions
-				this.getPosition().distance(otherRay.getPosition()) > this.length + otherRay.length)
+			this.getPosition().distance(otherRay.getPosition()) > this.length + otherRay.length)
 			return null;
 		
 		if(this._isVertical) return this.intersect_vertical(otherRay);
