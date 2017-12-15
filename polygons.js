@@ -673,9 +673,18 @@ class booleanOperation{
 		
 		//iterate through each mask vertex
 		var mAV = mask.getAbsVerts();
+		var mFV = null;					//mask first colliding vertex
+		var mLV = null;					//mask last colliding vertex
+		var mAV_inc = [];				//all mask vertices inside subject
 		for(var i = mAV.length - 1; i >= 0; i--){
-			
+			var cV = mAV[i];
+			if(subject.containsPoint(cV)){
+				if(!mFV) mFV = cV;
+				mLV = cV;
+			}
 		}
+		
+		//add all verts from mask between first and
 		
 		return r;
 	}
