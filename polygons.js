@@ -84,8 +84,12 @@ class vec2{
 	}
 	
 	direction(){
-		//returns the angle this vector is pointing in radians
+		// returns the angle this vector is pointing in radians
 		return Math.atan2(this.y, this.x);
+	}
+	directionTo(vec){
+		// returns the angle at which this points to another vector
+		return vec.minus(this).direction();
 	}
 	distance(vect2 = null){
 		//returns the distance between this and a specified vector2
@@ -100,7 +104,15 @@ class vec2{
 	clone(){
 		return new vec2(this.x, this.y);
 	}
+	toAnonObj(){
+		// returns an anonymous object with x and y fields
+		return {x: this.x, y:this.y};
+	}
 	
+	static fromAnonObj(vec){
+		// returns a vec2 object given any object with x and y fields
+		return new vec2(vec.x, vec.y);
+	}
 	static fromAng(angle, magnitude = 1){
 		//returns a vector which points in the specified angle
 		//and has the specified magnitude
@@ -505,7 +517,7 @@ class ray{
 		//recalculate the rays slope intercept formula variables
 		if(Math.abs(Math.abs(this._angle) - Math.PI / 2)
 				<= 0.0000001){										//if the angle is vertical,
-			this._m = Math.sign(this._angle);	 //_m stores the direcction that
+			this._m = Math.sign(this._angle);	 //_m stores the direction that
 			this._b = 0;												//the ray is pointing in, while
 			this._isVertical = true;						//_b is truncated
 		}
