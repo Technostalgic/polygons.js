@@ -9,6 +9,7 @@
 <HTML>
 <head>
 	<script src="../polygons.js"></script>
+	<script src="../debug.js"></script>
 </head>
 <body style="background-color:black; color:white; text-align:center;">
 	<canvas id="canvas" width="300px", height="300px"></canvas>
@@ -34,8 +35,12 @@
 			
 			var testRay = ray.fromPoints(new vec2(50, 150), new vec2(250, 150));
 			
-			//testPoly.getBoundingBox().drawOutline(context, "#00f");
-			testPoly.drawOutline(context, "#aaa");
+			var tpCol = "#aaa";
+			if(testPoly.containsPoint(focus, 0, context))
+				tpCol = "#000";
+			testPoly.drawOutline(context, tpCol);
+			
+			
 			var trCol = testRay.containsPoint(focus) ? "#000" : "#aaa";
 			testRay.draw(context, trCol);
 		}

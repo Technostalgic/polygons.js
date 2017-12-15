@@ -263,12 +263,29 @@ class polygon{
 			ray.addPolygonRays(this);
 		return this._rays;
 	}
-
+	
+	containsPoint(point, testAng = 1, context){
+		//testAng rarely makes a difference, so don't worry about it
+		console.log(testAng);
+		if(!this.getBoundingBox().containsPoint(point)) return false;
+		
+		var testRay = new ray(point, testAng);
+		console.log(testRay.isHorizontal());
+		var cols = testRay.polygonIntersections(this);
+		
+		context.fillStyle = "#0a0";
+		for(var i = cols.length - 1; i >= 0; i--)
+			context.fillRect(cols[i].intersection.x-3, cols[i].intersection.y-3, 6, 6);
+		
+		console.log(cols.length);
+		//returns true if the ray has an odd number of intersections
+		return cols.length % 2 === 1;
+	}
 	worldPointToLocal(position){
 		//transforms an absolute position to the same position in the scope of this polygon
 		var v = position;
 		
-		v = v.minus(this.getPosition());
+		v = v.minus(this.getPos());
 		v = v.multiply(1 / this.getScale())
 		
 		var ang = v.direction();
@@ -389,7 +406,7 @@ class box{
 			point.y <= this.bottom());
 	}
 	testIntersect(testray){
-		if(this.containsPoint(testray.getPosition()))
+		if(this.containsPoint(testray.getPos()))
 			return true;
 		if(testray._isVertical){
 			var testy = testray._m > 0 ? this.position.y : this.bottom();
@@ -400,7 +417,7 @@ class box{
 		}
 		
 		//test points on edges
-		var x_t = testray.getEndPosition().x;
+		var x_t = testray.getEndPos().x;
 		var xmin = Math.min(testray._origin.x, x_t);	//for making sure the intersect
 		var xmax = Math.max(testray._origin.x, x_t);	//is in range of the ray
 		var yal = testray.getY(this.position.x); //y at left
@@ -543,7 +560,7 @@ class ray{
 		//returns the intesection point between this and specified
 		//ray if there is one, otherwise returns null
 		if(this._angle === otherRay._angle ||	 //impossible collisions
-			this.getPosition().distance(otherRay.getPosition()) > this.length + otherRay.length)
+			this.getPos().distance(otherRay.getPos()) > this.length + otherRay.length)
 			return null;
 		
 		//optomize for vertical / horizontal raycasts
@@ -612,11 +629,17 @@ class ray{
 		return this._intersectRayCheck(intersect, otherRay) ? intersect : null;
 	}
 	_intersectRayCheck(intersect, otherRay){
+		// FIX
 		//ugly conditional bullshit below to assure that the intersect point lies on the ray:
 		//make sure intersect is not behind ray
 		var thisDir = Math.sign(this._m);
 		var intDir = Math.sign(intersect.y - this._origin.y);
 		if(thisDir != intDir) return false;
+		
+		//make sure intersect is not behind other ray
+		var oDir = Math.sign(otherRay._m);
+		var intDir = Math.sign(intersect.y - otherRay._origin.y);
+		if(oDir != intDir) return false;
 		
 		//make sure intersect distance is within the ray's specified length
 		var thisDist = intersect.distance(this._origin);
@@ -630,7 +653,7 @@ class ray{
 		return true;
 	}
 	
-	polygonCollision(poly){
+	polygonIntersections(poly){
 		if(!poly.getBoundingBox().testIntersect(this))
 			return [];
 		var cols = [];
