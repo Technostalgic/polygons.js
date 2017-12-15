@@ -1,54 +1,16 @@
 //Created by Isaiah Smith
 
-
-/* Feature Test:
-	used for testing the features of this namespace.
-	creates an example polygon and allows the user to
-	cast a ray through it by clicking on the canvas,
-	the ray collisions are then drawn in red, and the
-	intersection points in green.
-*/
-/* TEST BEGIN:
-
-var renderTarget = document.getElementById("canvas"); // replace "canvas" with the canvas element's name on your page
-var context = renderTarget.getContext("2d");
-
-document.getElementById("canvas").addEventListener("click", 
-	function(event){
-	init(event.offsetX, event.offsetY);
-});
-
-function init(x, y){
-	console.clear();
-	context.fillStyle = "#fff";
-	context.fillRect(0, 0, 300, 300);
-	var startRay = ray.fromPoints(new vec2(150, 150), new vec2(x, y));
-	console.log(startRay);
-	
-	var testPoly = new polygon();
-	testPoly.setVerts([new vec2(-4, -4), new vec2(-4, -5), new vec2(-2, -3), new vec2(-2, -1), new vec2(-1, -2), new vec2(-1, -5), new vec2(-2, -6), new vec2(-2, -8), new vec2(-1, -9), new vec2(0, -8), new vec2(1, -9), new vec2(2, -8), new vec2(2, -6), new vec2(1, -5), new vec2(1, -2), new vec2(2, -1), new vec2(2, -3), new vec2(4, -5), new vec2(4, -4), new vec2(5, -4), new vec2(3, -2), new vec2(3, 1), new vec2(4, 0), new vec2(4, 3), new vec2(1, 4), new vec2(1, 3), new vec2(0, 5), new vec2(-1, 3), new vec2(-1, 4), new vec2(-4, 3), new vec2(-4, 0), new vec2(-3, 1), new vec2(-3, -2), new vec2(-5, -4)]);
-	testPoly.setPosition(new vec2(65, 100));
-	testPoly.setScale(10);
-	var cols = startRay.polygonCollision(testPoly);
-	console.log("testPoly boundingbox: " + testPoly.getBoundingBox().testIntersect(startRay).toString());
-	
-	testPoly.getBoundingBox().drawOutline(context, "#00f");
-	testPoly.drawFill(context, "#bbb");
-	startRay.draw(context);
-	
-	context.fillStyle = "#0b0";
-	for(var i = 0; i < cols.length; i += 1){
-		cols[i].rayTarget.draw(context);
-		context.fillRect(cols[i].intersection.x-3, cols[i].intersection.y-3, 6, 6);
-	}
-}
-*/
+var enumBooleanOp = {
+		union: 0,		// or
+		difference: 1,	// not
+		intersect: 2,	// and
+		xor: 3			// exclusive or
+	};
 
 /* class vec2:
 	data structure used for storing vectors,
 	also contains useful methods for doing vector math
 */
-
 class vec2{
 	constructor(x = 0, y = 0){
 		this.x = x;
@@ -264,8 +226,9 @@ class polygon{
 		return this._rays;
 	}
 	
-	containsPoint(point, testAng = 0.01, context){
-		//testAng rarely makes a difference, so don't worry about it
+	containsPoint(point, testAng = 0.01){
+		//testAng rarely makes a difference, so don't worry about it, 
+		//as long as you dont set it to a multiple of pi/2 (including 0) you'll be fine
 		console.log(testAng);
 		if(!this.getBoundingBox().containsPoint(point)) return false;
 		
@@ -568,21 +531,7 @@ class ray{
 		intersect.x = (otherRay._b - this._b) / (this._m - otherRay._m);
 		intersect.y = this._m * intersect.x + this._b;
 		
-		if(intersect.distance(this._origin) > this.length) return null;
-		if(intersect.distance(otherRay._origin) > otherRay.length) return null;
-		
-		//just don't even ask. It's ugly. Basically this makes sure the intersection 
-		//point is in front of the ray instead of behind it:
-		var thisDir = Math.abs(this._angle) < Math.PI / 2 ? 1 : -1;
-		var intDir = Math.sign(intersect.x - this._origin.x);
-		if(thisDir != intDir) return null;
-		
-		var otherDir = Math.abs(otherRay._angle) < Math.PI / 2 ? 1 : -1;
-		intDir = Math.sign(intersect.x - otherRay._origin.x);
-		if(otherDir != intDir) return null;
-		
-		//if it passes the tests, we have a collision! :D
-		return intersect;
+		return this._intersectRayCheck(intersect, otherRay) ? intersect : null;
 	}
 	intersect_vertical(otherRay){
 		//parallel rays never intersect
@@ -623,28 +572,7 @@ class ray{
 		return this._intersectRayCheck(intersect, otherRay) ? intersect : null;
 	}
 	_intersectRayCheck(intersect, otherRay){
-		// FIX
-		//ugly conditional bullshit below to assure that the intersect point lies on the ray:
-		//make sure intersect is not behind ray
-		var thisDir = Math.sign(this._m);
-		var intDir = Math.sign(intersect.y - this._origin.y);
-		if(thisDir != intDir) return false;
-		
-		//make sure intersect is not behind other ray
-		var oDir = Math.sign(otherRay._m);
-		var intDir = Math.sign(intersect.y - otherRay._origin.y);
-		if(oDir != intDir) return false;
-		
-		//make sure intersect distance is within the ray's specified length
-		var thisDist = intersect.distance(this._origin);
-		if(thisDist > this.length) return false;
-		
-		//make sure intersect distance is within the other ray's specified length
-		var otherDist = intersect.distance(otherRay._origin);
-		if(otherDist > otherRay.length) return false;
-		
-		//if it passes the tests, we have a collision! :D
-		return true;
+		return this.containsPoint(intersect) && otherRay.containsPoint(intersect);
 	}
 	
 	polygonIntersections(poly){
@@ -722,6 +650,28 @@ class rayCollision{
 		this.intersection = collisionPoint;
 		this.vertexIndex = vertIndex;
 	}
+}
+
+class booleanOperation{
+	constructor(subject, mask, operation = enumBooleanOp.union){
+		this.subject = subject;
+		this.mask = mask;
+		this.operation = operation;
+	}
+	
+	getResult(){
+		switch(this.operation){
+			case enumBooleanOp.union: return null;
+			case enumBooleanOp.difference: return null;
+			case enumBooleanOp.intersect: return null;
+			case enumBooleanOp.xor: return null;
+		}
+	}
+	
+	static union(subject, mask){}
+	static difference(subject, mask){}
+	static intersect(subject, mask){}
+	static xor(subject, mask){}
 }
 
 function wrapValue(value, max){

@@ -13,39 +13,38 @@
 </head>
 <body style="background-color:black; color:white; text-align:center;">
 	<canvas id="canvas" width="300px", height="300px"></canvas>
-	<p>hover over shapes to test collision</p>
+	<p>click to create a polygon union</p>
 	<script type="text/javascript">
 		var renderTarget = document.getElementById("canvas"); 
 		var context = renderTarget.getContext("2d");
+		var testPoly;
 		
-		renderTarget.addEventListener("mousemove", 
+		renderTarget.addEventListener("click", 
 			function(event){
-			init(event.offsetX, event.offsetY);
+			union(event.offsetX, event.offsetY);
 		});
 		
-		function init(x, y){
+		function init(){
 			context.fillStyle = "#fff";
 			context.fillRect(0, 0, renderTarget.width, renderTarget.height);
-			var focus = new vec2(x, y);
 			
-			var testPoly = new polygon();
+			testPoly = new polygon();
 			testPoly.setVerts([new vec2(-4, -4), new vec2(-4, -5), new vec2(-2, -3), new vec2(-2, -1), new vec2(-1, -2), new vec2(-1, -5), new vec2(-2, -6), new vec2(-2, -8), new vec2(-1, -9), new vec2(0, -8), new vec2(1, -9), new vec2(2, -8), new vec2(2, -6), new vec2(1, -5), new vec2(1, -2), new vec2(2, -1), new vec2(2, -3), new vec2(4, -5), new vec2(4, -4), new vec2(5, -4), new vec2(3, -2), new vec2(3, 1), new vec2(4, 0), new vec2(4, 3), new vec2(1, 4), new vec2(1, 3), new vec2(0, 5), new vec2(-1, 3), new vec2(-1, 4), new vec2(-4, 3), new vec2(-4, 0), new vec2(-3, 1), new vec2(-3, -2), new vec2(-5, -4)]);
 			testPoly.setPos(new vec2(150, 200));
 			testPoly.setScale(10);
 			
-			var testRay = ray.fromPoints(new vec2(50, 150), new vec2(250, 150));
-			
-			var tpCol = "#aaa";
-			if(testPoly.containsPoint(focus)){
-				testPoly.drawFill(context, "#aaa");
-				tpCol = "#000";
-			}
-			testPoly.drawOutline(context, tpCol);
-			
-			
-			var trCol = testRay.containsPoint(focus) ? "#000" : "#aaa";
-			testRay.draw(context, trCol);
+			testPoly.drawFill(context, "#aaa");
+			testPoly.drawOutline(context, "#000");
 		}
+		function union(x, y){
+			var maskPoly = new polygon();
+			
+			testPoly = booleanOperation.union(testPoly, maskPoly);
+
+			testPoly.drawFill(context, "#aaa");
+			testPoly.drawOutline(context, "#000");
+		}
+		
 		init();
 	</script>
 </body>
