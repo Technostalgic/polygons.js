@@ -97,6 +97,10 @@ class vec2{
 		return d;
 	}
 	
+	clone(){
+		return new vec2(this.x, this.y);
+	}
+	
 	static fromAng(angle, magnitude = 1){
 		//returns a vector which points in the specified angle
 		//and has the specified magnitude
