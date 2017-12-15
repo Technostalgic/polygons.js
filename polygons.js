@@ -177,48 +177,7 @@ class polygon{
 		return this._points;
 	}
 	
-	move(translation){
-		this._position = this._position.plus(translation);
-		this._absVerts = null;
-		return this;
-	}
-	setPosition(pos){
-		this._position = pos;
-		this._absVerts = null;
-		return this;
-	}
-	getPosition(){
-		return this._position;
-	}
-	setScale(scale){
-		this._scale = scale;
-		this._absVerts = null;
-		return this;
-	}
-	getScale(){
-		return this._scale;
-	}
-	setRotation(angle){
-		this._rotation = angle;
-		this._absVerts = null;
-		return this;
-	}
-	getRotation(){
-		return this._rotation;
-	}
-	setFlipped(flip = true){
-		this._flipped = flip;
-		this._absVerts = null;
-	}
-	getFlipped(){
-		return this._flipped;
-	}
-	getEdgeRays(){
-		if(!this._rays)
-			ray.addPolygonRays(this);
-		return this._rays;
-	}
-	transform(translate, rotate = 0, scale = 1){
+	transformPoints(translate, scale = 1, rotate = 0){
 		//transforms the point data of the polygon
 		for(var i = 0; i < this._points.length; i += 1){
 			var v = this._points[i];
@@ -233,6 +192,62 @@ class polygon{
 		}
 		this._absVerts = null;
 	}
+	flipPoints(vertically = true, horizontally = false){
+		// flips points along the relative axes
+		// if vertically, flips ACROSS y-axis (x *= -1)
+		// if horizontally, flips ACROSS x-axis (y *= -1)
+		for(var i = 0; i < this._points.length; i += 1){
+			var v = this._points[i];
+			
+			if(vertically) v.x *= -1;
+			if(horizontally) v.y *= -1;
+			
+			this._points[i] = v;
+		}
+		this._absVerts = null;
+	}
+	movePos(translation){
+		this._position = this._position.plus(translation);
+		this._absVerts = null;
+		return this;
+	}	
+	setPos(pos){
+		this._position = pos;
+		this._absVerts = null;
+		return this;
+	}
+	getPos(){
+		return this._position;
+	}
+	setScale(scale){
+		this._scale = scale;
+		this._absVerts = null;
+		return this;
+	}
+	getScale(){
+		return this._scale;
+	}
+	setRot(angle){
+		this._rotation = angle;
+		this._absVerts = null;
+		return this;
+	}
+	getRot(){
+		return this._rotation;
+	}
+	setFlipped(flip = true){
+		this._flipped = flip;
+		this._absVerts = null;
+	}
+	getFlipped(){
+		return this._flipped;
+	}
+	getEdgeRays(){
+		if(!this._rays)
+			ray.addPolygonRays(this);
+		return this._rays;
+	}
+
 	worldPointToLocal(position){
 		//transforms an absolute position to the same position in the scope of this polygon
 		var v = position;

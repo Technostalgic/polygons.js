@@ -30,7 +30,7 @@
 			
 			var testPoly = new polygon();
 			testPoly.setVerts([new vec2(-4, -4), new vec2(-4, -5), new vec2(-2, -3), new vec2(-2, -1), new vec2(-1, -2), new vec2(-1, -5), new vec2(-2, -6), new vec2(-2, -8), new vec2(-1, -9), new vec2(0, -8), new vec2(1, -9), new vec2(2, -8), new vec2(2, -6), new vec2(1, -5), new vec2(1, -2), new vec2(2, -1), new vec2(2, -3), new vec2(4, -5), new vec2(4, -4), new vec2(5, -4), new vec2(3, -2), new vec2(3, 1), new vec2(4, 0), new vec2(4, 3), new vec2(1, 4), new vec2(1, 3), new vec2(0, 5), new vec2(-1, 3), new vec2(-1, 4), new vec2(-4, 3), new vec2(-4, 0), new vec2(-3, 1), new vec2(-3, -2), new vec2(-5, -4)]);
-			testPoly.setPosition(new vec2(65, 100));
+			testPoly.setPos(new vec2(65, 100));
 			testPoly.setScale(10);
 			var cols = startRay.polygonCollision(testPoly);
 			console.log("testPoly boundingbox: " + testPoly.getBoundingBox().testIntersect(startRay).toString());
