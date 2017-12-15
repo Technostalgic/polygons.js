@@ -513,6 +513,9 @@ class ray{
 		//x = (y-b)/m
 		return (y - this._b) / this._m;
 	}
+	isHorizontal(){
+		return this._m === 0;
+	}
 	recalculate(){
 		//recalculate the rays slope intercept formula variables
 		if(Math.abs(Math.abs(this._angle) - Math.PI / 2)
@@ -535,8 +538,11 @@ class ray{
 			this.getPosition().distance(otherRay.getPosition()) > this.length + otherRay.length)
 			return null;
 		
+		//optomize for vertical / horizontal raycasts
 		if(this._isVertical) return this.intersect_vertical(otherRay);
 		if(otherRay._isVertical) return otherRay.intersect_vertical(this);
+		//if(this.isHorizontal()) return this.intersect_horizontal(otherRay);
+		//if(otherRay.isHorizontal()) return otherRay.intersect_horizontal(this);
 		
 		var intersect = new vec2();
 		//calculate intersection
@@ -565,25 +571,55 @@ class ray{
 		
 		//calculate vertical intersection
 		var intersect = new vec2();
-		intersect.x = this._origin.x;
-		intersect.y = otherRay.getY(intersect.x);
 		
+		if(otherRay.isHorizontal()){
+			//optomize calculation for horizontal vs vertical intersection
+			intersect.x = this._origin.x;
+			intersect.y = otherRay._origin.y;
+		}
+		else{
+			intersect.x = this._origin.x;
+			intersect.y = otherRay.getY(intersect.x);
+		}
+		
+		return this._intersectRayCheck(intersect, otherRay) ? intersect : null;
+	}
+	intersect_horizontal(otherRay){
+		//parallel rays never intersect
+		if(otherRay.isHorizontal()) return null;
+		
+		//calculate vertical intersection
+		var intersect = new vec2();
+		
+		if(otherRay.isVertical()){
+			//optomize calculation for vertical vs horizontal intersection
+			intersect.y = this._origin.y;
+			intersect.x = otherRay._origin.x;
+		}
+		else{
+			intersect.y = this._origin.y;
+			intersect.x = otherRay.getX(intersect.y);
+		}
+		
+		return this._intersectRayCheck(intersect, otherRay) ? intersect : null;
+	}
+	_intersectRayCheck(intersect, otherRay){
 		//ugly conditional bullshit below to assure that the collision point lies on the ray:
 		//make sure intersect is not behind ray
 		var thisDir = Math.sign(this._m);
 		var intDir = Math.sign(intersect.y - this._origin.y);
-		if(thisDir != intDir) return null;
+		if(thisDir != intDir) return false;
 		
 		//make sure intersect distance is within the ray's specified length
 		var thisDist = intersect.distance(this._origin);
-		if(thisDist > this.length) return null;
+		if(thisDist > this.length) return false;
 		
 		//make sure intersect distance is within the other ray's specified length
 		var otherDist = intersect.distance(otherRay._origin);
-		if(otherDist > otherRay.length) return null;
+		if(otherDist > otherRay.length) return false;
 		
 		//if it passes the tests, we have a collision! :D
-		return intersect;
+		return true;
 	}
 	
 	polygonCollision(poly){
