@@ -661,17 +661,39 @@ class booleanOperation{
 	
 	getResult(){
 		switch(this.operation){
-			case enumBooleanOp.union: return null;
-			case enumBooleanOp.difference: return null;
-			case enumBooleanOp.intersect: return null;
-			case enumBooleanOp.xor: return null;
+			case enumBooleanOp.union: return booleanOperation.union(this.subject, this.mask);
+			case enumBooleanOp.difference: return return booleanOperation.difference(this.subject, this.mask);
+			case enumBooleanOp.intersect: return return booleanOperation.intersect(this.subject, this.mask);
+			case enumBooleanOp.xor: return return booleanOperation.xor(this.subject, this.mask);
 		}
 	}
 	
-	static union(subject, mask){}
-	static difference(subject, mask){}
-	static intersect(subject, mask){}
-	static xor(subject, mask){}
+	static union(subject, mask){
+		var r = new polygon();
+		
+		//iterate through each mask vertex
+		var mAV = mask.getAbsVerts();
+		for(var i = mAV.length - 1; i >= 0; i--){
+			
+		}
+		
+		return r;
+	}
+	static difference(subject, mask){
+		var r = new polygon();
+		
+		return r;
+	}
+	static intersect(subject, mask){
+		var r = new polygon();
+		
+		return r;
+	}
+	static xor(subject, mask){
+		var r = new polygon();
+		
+		return r;
+	}
 }
 
 function wrapValue(value, max){
