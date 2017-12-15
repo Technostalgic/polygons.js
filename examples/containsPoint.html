@@ -36,7 +36,7 @@
 			var testRay = ray.fromPoints(new vec2(50, 150), new vec2(250, 150));
 			
 			var tpCol = "#aaa";
-			if(testPoly.containsPoint(focus, 0, context))
+			if(testPoly.containsPoint(focus))
 				tpCol = "#000";
 			testPoly.drawOutline(context, tpCol);
 			

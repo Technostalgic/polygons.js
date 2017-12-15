@@ -264,20 +264,14 @@ class polygon{
 		return this._rays;
 	}
 	
-	containsPoint(point, testAng = 1, context){
+	containsPoint(point, testAng = 0.01, context){
 		//testAng rarely makes a difference, so don't worry about it
 		console.log(testAng);
 		if(!this.getBoundingBox().containsPoint(point)) return false;
 		
 		var testRay = new ray(point, testAng);
-		console.log(testRay.isHorizontal());
 		var cols = testRay.polygonIntersections(this);
 		
-		context.fillStyle = "#0a0";
-		for(var i = cols.length - 1; i >= 0; i--)
-			context.fillRect(cols[i].intersection.x-3, cols[i].intersection.y-3, 6, 6);
-		
-		console.log(cols.length);
 		//returns true if the ray has an odd number of intersections
 		return cols.length % 2 === 1;
 	}
