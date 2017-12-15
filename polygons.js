@@ -451,20 +451,20 @@ class ray{
 		//already called inside of this.setAngle, it would be redundant
 	}
 	
-	getPosition(){
+	getPos(){
 		return this._origin;
 	}
-	setPosition(pos){
+	setPos(pos){
 		this._origin = pos;
 		this.recalculate();
 	}
-	getEndPosition(){
+	getEndPos(){
 		var mag = this.length;
 		if(mag == Infinity)
 			mag = 999999;
 		return this._origin.plus(vec2.fromAng(this._angle).multiply(mag));
 	}
-	setEndPosition(pos){
+	setEndPos(pos){
 		var mag = this._origin.distance(pos);
 		var dir = pos.minus(this._origin).direction();
 		this.length = mag;
@@ -531,6 +531,14 @@ class ray{
 		}
 	}
 	
+	containsPoint(point, leniency = 0.01){
+		// returns true if the point lies on the ray
+		if(point.distance(this.getPos()) > this.length) return false;
+		
+		// FIX make less likely to have logical leniency error
+		var pointDir = this._origin.directionTo(point);
+		return Math.abs(pointDir - this.getAngle()) <= leniency;
+	}
 	intersection(otherRay){
 		//returns the intesection point between this and specified
 		//ray if there is one, otherwise returns null
@@ -604,7 +612,7 @@ class ray{
 		return this._intersectRayCheck(intersect, otherRay) ? intersect : null;
 	}
 	_intersectRayCheck(intersect, otherRay){
-		//ugly conditional bullshit below to assure that the collision point lies on the ray:
+		//ugly conditional bullshit below to assure that the intersect point lies on the ray:
 		//make sure intersect is not behind ray
 		var thisDir = Math.sign(this._m);
 		var intDir = Math.sign(intersect.y - this._origin.y);
@@ -643,20 +651,22 @@ class ray{
 	
 	draw(ctx, color = "#f00", width = 1){
 		ctx.strokeStyle = color;
-		
-		ctx.lineWidth = width * 2;
-		ctx.beginPath();
-		ctx.moveTo(this.getPosition().x, this.getPosition().y);
-		var end = this.getPosition().plus(vec2.fromAng(this.getAngle(), this.length / 4));
-		ctx.lineTo(end.x, end.y);
-		ctx.stroke();
-		
 		ctx.lineWidth = width;
 		ctx.beginPath();
-		ctx.moveTo(this.getPosition().x, this.getPosition().y);
-		var end = this.getEndPosition();
+		ctx.moveTo(this.getPos().x, this.getPos().y);
+		var end = this.getEndPos();
 		ctx.lineTo(end.x, end.y);
 		ctx.stroke();
+	}
+	drawDebug(ctx, color = "#f00", width = 1){
+		ctx.lineWidth = width * 2;
+		ctx.beginPath();
+		ctx.moveTo(this.getPos().x, this.getPos().y);
+		var end = this.getPos().plus(vec2.fromAng(this.getAngle(), this.length / 4));
+		ctx.lineTo(end.x, end.y);
+		ctx.stroke();
+		
+		this.draw(ctx, color, width);
 	}
 	
 	static addPolygonRays(poly){
