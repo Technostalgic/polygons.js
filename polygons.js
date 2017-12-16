@@ -132,7 +132,7 @@ class polygon{
 	}
 	updateAbsVerts(){
 		this._absVerts = [];
-		for(var i = 0; i < this._points.length; i += 1){
+		for(var i = 0; i < this._points.length; i++){
 			var v = this._points[i];
 			v.x *= this._flipped ? -1 : 1;
 			
@@ -153,6 +153,24 @@ class polygon{
 	}
 	getVerts(){
 		return this._points;
+	}
+	setAbsVerts(absverts){
+		this._points = [];
+		for(var i = 0; i < absverts.length; i++){
+			var v = absverts[i];
+			v = v.plus(this._position.inverted());
+			v = v.multiply(this._scale * -1);
+			
+			var ang = v.direction();
+			var mag = v.distance();
+			v = vec2.fromAng(ang - this._rotation, mag);
+			
+			v.x *= this._flipped ? -1 : 1;
+			this._points.push(v);
+		}
+		this._absVerts = null;
+		this._rays = null;
+		console.log(this._points);
 	}
 	
 	transformPoints(translate, scale = 1, rotate = 0){
@@ -229,7 +247,6 @@ class polygon{
 	containsPoint(point, testAng = 0.01){
 		//testAng rarely makes a difference, so don't worry about it, 
 		//as long as you dont set it to a multiple of pi/2 (including 0) you'll be fine
-		console.log(testAng);
 		if(!this.getBoundingBox().containsPoint(point)) return false;
 		
 		var testRay = new ray(point, testAng);
@@ -662,29 +679,53 @@ class booleanOperation{
 	getResult(){
 		switch(this.operation){
 			case enumBooleanOp.union: return booleanOperation.union(this.subject, this.mask);
-			case enumBooleanOp.difference: return return booleanOperation.difference(this.subject, this.mask);
-			case enumBooleanOp.intersect: return return booleanOperation.intersect(this.subject, this.mask);
-			case enumBooleanOp.xor: return return booleanOperation.xor(this.subject, this.mask);
+			case enumBooleanOp.difference:  return booleanOperation.difference(this.subject, this.mask);
+			case enumBooleanOp.intersect:  return booleanOperation.intersect(this.subject, this.mask);
+			case enumBooleanOp.xor: return  booleanOperation.xor(this.subject, this.mask);
 		}
 	}
 	
 	static union(subject, mask){
 		var r = new polygon();
 		
-		//iterate through each mask vertex
+		// mask vertex info
 		var mAV = mask.getAbsVerts();
+		var mFI = null;					//mask first colliding intersect
+		var mLI = null;					//mask last colliding intersect
 		var mFV = null;					//mask first colliding vertex
 		var mLV = null;					//mask last colliding vertex
-		var mAV_inc = [];				//all mask vertices inside subject
+		
+		//iterate through each mask vertex but start iteration on a vertex that isn't inside the subject
+		//(FIX 'off' lack of implementation)
+		var off = 0;
+		while(subject.containsPoint(mAV[off])) off++;
 		for(var i = mAV.length - 1; i >= 0; i--){
-			var cV = mAV[i];
-			if(subject.containsPoint(cV)){
-				if(!mFV) mFV = cV;
-				mLV = cV;
+			var cv0 = mAV[i];
+			var cv1 = mAV[wrapValue(i - 1), mAV.length];
+			
+			var cRay = ray.fromPoints(mAV[cv0], mAV[cv1]);
+			var cX = ray.polygonIntersections(subject);
+			cX.sort(function(a,b){
+				return a.intersection.distance(cRay.getPos()) - b.intersection.distance(cRay.getPos());
+			});
+			
+			//on ray intersection
+			if(cX.length > 0){
+				if(!mFV) {
+					mFI = cX[0].intersect;
+					mFV = cv1;
+				}
+				mLI = cX[cX.length - 1].intersect;
+				if(!mFV.equals(cv1)) mLV = cv0; // mLV remains null if there is not subject vertices between the max and min intersections
 			}
 		}
 		
-		//add all verts from mask between first and
+		// make shape to be extended on to subject
+		mAV_ext = [mFI];
+		if(mLV)
+			for(var i = mFV; i != wrapValue(mLV + 1, mAV.length); i = wrapValue(i + 1, mAV.length))
+				mAV_ext.push(mAV[i]);
+		mAV_ext.push(mLI);
 		
 		return r;
 	}
