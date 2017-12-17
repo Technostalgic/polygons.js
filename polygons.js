@@ -159,7 +159,7 @@ class polygon{
 		for(var i = 0; i < absverts.length; i++){
 			var v = absverts[i];
 			v = v.plus(this._position.inverted());
-			v = v.multiply(this._scale * -1);
+			v = v.multiply(1 / this._scale);
 			
 			var ang = v.direction();
 			var mag = v.distance();
@@ -688,23 +688,27 @@ class booleanOperation{
 	static union(subject, mask){
 		var r = new polygon();
 		
-		// mask vertex info
+		// vertex index info
 		var mAV = mask.getAbsVerts();
+		var sAV = subject.getAbsVerts();
 		var mFI = null;					//mask first colliding intersect
 		var mLI = null;					//mask last colliding intersect
 		var mFV = null;					//mask first colliding vertex
 		var mLV = null;					//mask last colliding vertex
+		var sFV = null;					//subject first colliding vertex
+		var sLV = null;					//subject last colliding vertex
 		
 		//iterate through each mask vertex but start iteration on a vertex that isn't inside the subject
-		//(FIX 'off' lack of implementation)
 		var off = 0;
 		while(subject.containsPoint(mAV[off])) off++;
 		for(var i = mAV.length - 1; i >= 0; i--){
-			var cv0 = mAV[i];
-			var cv1 = mAV[wrapValue(i - 1), mAV.length];
+			var i0 = wrapValue(off + i, mAV.length);
+			var i1 = wrapValue(i0 - 1, mAV.length);
+			var cv0 = mAV[i0];
+			var cv1 = mAV[i1];
 			
-			var cRay = ray.fromPoints(mAV[cv0], mAV[cv1]);
-			var cX = ray.polygonIntersections(subject);
+			var cRay = ray.fromPoints(mAV[i0], mAV[i1]);
+			var cX = cRay.polygonIntersections(subject);
 			cX.sort(function(a,b){
 				return a.intersection.distance(cRay.getPos()) - b.intersection.distance(cRay.getPos());
 			});
@@ -712,21 +716,40 @@ class booleanOperation{
 			//on ray intersection
 			if(cX.length > 0){
 				if(!mFV) {
-					mFI = cX[0].intersect;
-					mFV = cv1;
+					mFI = cX[0].intersection;
+					mFV = i0;
+					sFV = cX[0].vertexIndex;
 				}
-				mLI = cX[cX.length - 1].intersect;
-				if(!mFV.equals(cv1)) mLV = cv0; // mLV remains null if there is not subject vertices between the max and min intersections
+				mLI = cX[cX.length - 1].intersection;
+				sLV = wrapValue(cX[cX.length - 1].vertexIndex + 1, sAV.length);
+				
+				// mLV remains null if there is no mask vertices between the max and min intersections
+				mLV = i0;
 			}
 		}
 		
 		// make shape to be extended on to subject
-		mAV_ext = [mFI];
-		if(mLV)
-			for(var i = mFV; i != wrapValue(mLV + 1, mAV.length); i = wrapValue(i + 1, mAV.length))
-				mAV_ext.push(mAV[i]);
+		var mAV_ext = [mFI];
+		for(var i = mFV; i != wrapValue(mLV, mAV.length); i = wrapValue(i + 1, mAV.length))
+			mAV_ext.push(mAV[i]);
 		mAV_ext.push(mLI);
 		
+		// make shape to be extended from
+		var sAV_ext = [];
+		for(var i = sLV; i != sFV; i = wrapValue(i + 1, sAV.length))
+			sAV_ext.push(sAV[i]);
+		sAV_ext.push(sAV[sFV]);
+		
+		// make combined shape
+		var verts = [];
+		for(var i = 0; i < mAV_ext.length; i++){
+			verts.push(mAV_ext[i].clone());
+		}
+		for(var i = 0; i < sAV_ext.length; i++){
+			verts.push(sAV_ext[i].clone());
+		}
+		
+		r.setVerts(verts);
 		return r;
 	}
 	static difference(subject, mask){
