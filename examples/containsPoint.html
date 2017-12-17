@@ -21,8 +21,8 @@
 		var testRay;
 		
 		renderTarget.addEventListener("mousemove", 
-			function(event){
-			update(event.offsetX, event.offsetY);
+			function(event){ timeFunc(function(){
+			update(event.offsetX, event.offsetY); });
 		});
 		
 		function init(){

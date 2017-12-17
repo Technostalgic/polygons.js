@@ -21,8 +21,8 @@
 		var maskPoly;
 		
 		renderTarget.addEventListener("click", 
-			function(event){
-			union(event.offsetX, event.offsetY);
+			function(event){ timeFunc(function(){
+			union(event.offsetX, event.offsetY); });
 		});
 		renderTarget.addEventListener("mousemove", 
 			function(event){
