@@ -42,7 +42,7 @@
 		function union(x, y){
 			maskPoly.setPos(new vec2(x, y));
 			
-			testPoly = booleanOperation.union(testPoly, maskPoly);
+			testPoly = booleanOperation.union_plus(testPoly, maskPoly);
 
 			draw();
 		}

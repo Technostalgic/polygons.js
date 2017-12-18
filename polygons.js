@@ -361,6 +361,12 @@ class box{
 	right(){
 		return this.position.x + this.size.x;
 	}
+	topLeft(){
+		return this.position;
+	}
+	bottomRight(){
+		return this.position.plus(this.size);
+	}
 	
 	drawOutline(ctx, color = "#888", thickness = 1){
 		ctx.strokeStyle = color;
@@ -372,6 +378,14 @@ class box{
 		ctx.fillRect(this.position.x, this.position.y, this.size.x, this.size.y);
 	}
 	
+	extended(other){
+		//extends the boundaries of this box to encase another box
+		var maxX = Math.max(this.left(), this.right(), other.left(), other.right());
+		var maxY = Math.max(this.top(), this.bottom(), other.top(), other.bottom());
+		var minX = Math.min(this.left(), this.right(), other.left(), other.right());
+		var minY = Math.min(this.top(), this.bottom(), other.top(), other.bottom());
+		return box.fromSides(minX, maxX, minY, maxY);
+	}
 	containsPoint(point){
 		return (
 			point.x >= this.position.x &&
@@ -411,12 +425,16 @@ class box{
 			return xmin <= xab && xab <= xmax;
 		return false;
 	}
+	
 	static testOverlap(boxA, boxB){
 		return !(
 				boxB.left() > boxA.right() ||
 				boxB.right() < boxA.left() ||
 				boxB.top() > boxA.bottom() ||
 				boxB.bottom() < boxA.top());
+	}
+	static fromSides(l, r, t, b){
+		return new box(l, t, r-l, b-t);
 	}
 	
 	toString(){
@@ -540,6 +558,7 @@ class ray{
 		//optomize for vertical / horizontal raycasts
 		if(this._isVertical) return this.intersect_vertical(otherRay);
 		if(otherRay._isVertical) return otherRay.intersect_vertical(this);
+		//FIX
 		//if(this.isHorizontal()) return this.intersect_horizontal(otherRay);
 		//if(otherRay.isHorizontal()) return otherRay.intersect_horizontal(this);
 		
@@ -640,7 +659,9 @@ class ray{
 			if(i2 >= absVerts.length)
 				i2 = 0;
 			
-			poly._rays.push(ray.fromPoints(absVerts[i], absVerts[i2]));
+			var r = ray.fromPoints(absVerts[i], absVerts[i2]);
+			r._parentPoly = poly;
+			poly._rays.push(r);
 		}
 	}
 	static rayData(m, b, length = Infinity){
@@ -685,6 +706,57 @@ class booleanOperation{
 		}
 	}
 	
+	static union_plus(subject, mask){
+		//crawling vertex algorithm
+		var r = new polygon();
+		var nVerts = [];
+		
+		var aabb_ext = subject.getBoundingBox().extended(mask.getBoundingBox());
+		var crawlRayStart = ray.fromPoints(aabb_ext.topLeft(), aabb_ext.bottomRight());
+		var crsX = crawlRayStart.polygonIntersections(subject).concat(crawlRayStart.polygonIntersections(mask));
+		crsX.sort(function(a,b) {
+			return a.intersection.distance(crawlRayStart.getPos()) - b.intersection.distance(crawlRayStart.getPos());
+		});
+		var crawlStart = crsX[0];
+		var csIndex = crawlStart.vertexIndex;
+		var currentVerts = crawlStart.rayTarget._parentPoly.getAbsVerts(); // absolute vertices of poly currently crawling on
+		var ncp = crawlStart.rayTarget._parentPoly == subject ? mask : subject; // the poly not currently crawling on
+		var csIndex_next = wrapValue(csIndex + 1, currentVerts.length); //index of next vertex to crawl to
+		var currentRay = ray.fromPoints(crawlStart.intersection, currentVerts[csIndex_next]);
+		
+		var ncpX = currentRay.polygonIntersections(ncp);
+		ncpX.sort(function(a,b){
+			return a.intersection.distance(currentRay.getPos()) - b.intersection.distance(currentRay.getPos());
+		});
+		ncpX = ncpX.length > 0 ? ncpX[0] : null;
+		do{
+			if(ncpX){
+				currentVerts = ncp.getAbsVerts();
+				ncp = ncp == subject ? mask : subject;
+				csIndex = ncpX.vertexIndex;
+				csIndex_next = wrapValue(csIndex + 1, currentVerts.length);
+				currentRay = ray.fromPoints(ncpX.intersection, currentVerts[csIndex_next]);
+			} else {
+				csIndex = wrapValue(csIndex + 1, currentVerts.length);
+				csIndex_next = wrapValue(csIndex_next + 1, currentVerts.length);
+				currentRay = ray.fromPoints(currentVerts[csIndex], currentVerts[csIndex_next]);
+			}
+			nVerts.push(currentRay.getPos().clone());
+			
+			ncpX = currentRay.polygonIntersections(ncp);
+			ncpX.sort(function(a,b){
+				return a.intersection.distance(currentRay.getPos()) - b.intersection.distance(currentRay.getPos());
+			});
+			ncpX = ncpX.length > 0 ? ncpX[0] : null;
+			if(ncpX)
+				currentRay.length = ncpX.intersection.distance(currentRay.getPos());
+		} while(!currentRay.containsPoint(crawlStart.intersection));
+		
+		nVerts.push(currentVerts[csIndex]);
+		
+		r.setVerts(nVerts);
+		return r;
+	}
 	static union(subject, mask){
 		var r = new polygon();
 		
