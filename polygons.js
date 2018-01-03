@@ -45,6 +45,14 @@ class vec2{
 			Math.abs(this.y - vect2.y) <= leniency);
 	}
 	
+	static average(points = []){
+		var p = new vec2();
+		for(var i = points.length - 1; i >= 0; i--)
+			p = p.plus(points[i]);
+		p = p.multiply(1 / points.length);
+		return p;
+	}
+	
 	direction(){
 		// returns the angle this vector is pointing in radians
 		return Math.atan2(this.y, this.x);
@@ -366,6 +374,9 @@ class box{
 	}
 	bottomRight(){
 		return this.position.plus(this.size);
+	}
+	center(){
+		return new vec2( (this.left() + this.right()) / 2, (this.top() + this.bottom()) / 2 );
 	}
 	
 	drawOutline(ctx, color = "#888", thickness = 1){
@@ -729,7 +740,9 @@ class booleanOperation{
 			return a.intersection.distance(currentRay.getPos()) - b.intersection.distance(currentRay.getPos());
 		});
 		ncpX = ncpX.length > 0 ? ncpX[0] : null;
+		var k = 0;
 		do{
+			console.log(k);
 			if(ncpX){
 				currentVerts = ncp.getAbsVerts();
 				ncp = ncp == subject ? mask : subject;
@@ -750,7 +763,8 @@ class booleanOperation{
 			ncpX = ncpX.length > 0 ? ncpX[0] : null;
 			if(ncpX)
 				currentRay.length = ncpX.intersection.distance(currentRay.getPos());
-		} while(!currentRay.containsPoint(crawlStart.intersection));
+			k++;
+		} while(!currentRay.containsPoint(crawlStart.intersection) && k < 1000);
 		
 		nVerts.push(currentVerts[csIndex]);
 		
