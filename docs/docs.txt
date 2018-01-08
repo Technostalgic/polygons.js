@@ -1,0 +1,22 @@
+The provided documentation is for release 0.8.0
+
+polygons.js:
+	A library intended to make polygon based collision detection easier. The library includes many useful data structures that can be used to define polygon shapes, define a 2d vector, cast a ray, create an axis-aligned bounding box, and test for collisions between each of these objects.
+	polygons.js is intended to be simpler and more optomized than other libraries that perform similar tasks, such as Clipper, as such, the library comes with more limitation than these more complex libraries. For instance, polygon.js only suports single continuous polygon shapes: currently there is no support for holes, or polygons with multiple parts.
+
+Global methods:
+	wrapValue(value[Number], max[Number])
+		Description:
+			this method is used to keep and indexed number between the minimum index(0) and the given max index('max'), if the provided 'value' reaches the 'max' index, it wraps back around to 0.
+			useful for when iterating through a list and need to find the object that comes next or previously from the current iteration. Essentially this method is the same as the modulus, but the result is always positive
+		Returns: [Number]
+		Parameters:
+			value[Number] - a number to wrap between 0 and 'max'(exclusive)
+			max[Number] - the exclusive max value, if 'value' is equal to this, the method returns 0
+			
+Data Structures:
+	vec2: a 2-dimenstional vector
+	ray: a line segment used for finding intersection points
+	rayCollision: contains information about ray intersections
+	box: axis-aligned bounding box
+	polygon: a simple 2-dimentional shape defined by an array of 2D vectors

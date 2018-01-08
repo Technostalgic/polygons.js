@@ -1,0 +1,5 @@
+current version: 0.8.1
+most recent stable version: 0.8.0
+
+0.8.1 - beginning to incorporate boolean operations
+0.8.0 - first release
