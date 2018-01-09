@@ -12,7 +12,7 @@ Constructor:
 			h[Number]: the height of the box
 	
 Static methods:
-	testOverlap(boxA[box], boxB[box])
+	box.testOverlap(boxA[box], boxB[box])
 		Description:
 			a quick Boolean check to see whether or not two boxes are overlapping (inclusive)
 		Returns: [Boolean]
@@ -20,7 +20,7 @@ Static methods:
 			boxA[box]: the first box to check collision with the second
 			boxB[box]: the second box to check collision with the first
 		
-	fromSides(l, r, t, b)
+	box.fromSides(l, r, t, b)
 		Description:
 			returns a new box from the given boundaries
 		Returns: [box]
