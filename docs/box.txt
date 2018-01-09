@@ -2,9 +2,33 @@ box:
 	an object used mainly for defining axis aligned bounding boxes around polygon shapes. Axis aligned bounding boxes are essential for mid-phase collision optimization.
 
 Constructor:
-	new box();
+	new box(x[Number default=0], y[Number default=0], w[Number default=0], h[Number default=0])
+		Description:
+			returns a new box object with specified x and y positions, and width and height
+		Parameters:
+			x[Number]: the x-position of the box
+			y[Number]: the y-position of the box
+			w[Number]: the width of the box
+			h[Number]: the height of the box
 	
 Static methods:
+	testOverlap(boxA[box], boxB[box])
+		Description:
+			a quick Boolean check to see whether or not two boxes are overlapping (inclusive)
+		Returns: [Boolean]
+		Parameters:
+			boxA[box]: the first box to check collision with the second
+			boxB[box]: the second box to check collision with the first
+		
+	fromSides(l, r, t, b)
+		Description:
+			returns a new box from the given boundaries
+		Returns: [box]
+		Parameters:
+			l[Number]: the left side of the box
+			r[Number]: the right side of the box
+			t[Number]: the top side of the box
+			b[Number]: the bottom side of the box
 	
 Object methods:
 	(constructor): see above
@@ -78,3 +102,15 @@ Object methods:
 		Parameters:
 			ctx[CanvasRenderingContext2D]: the context for the box to be rendered onto
 			color[String]: the color that the box will be drawn as
+	
+	toString()
+		Description:
+			returns a readable format of the box's data
+		Returns: [String]
+		
+Object properties:
+	position[vec2]:
+		the position of the box's top left corner
+		
+	size[vec2]:
+		the width and height of the box
