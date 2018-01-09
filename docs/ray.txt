@@ -1,0 +1,189 @@
+ray:
+	An object used for calculating intersection points with other rays or bounding boxes. All intersections ar calculated using slope-intercept form, the ray has a given origin, angle, and length, from which it derives a slope and a y-offset, or "m" and "b" in the slope-intercept formula y=m*x+b
+	
+Constructor:
+	new ray(pos[vec2 default=new()], angle[Number default=0], length[Number default=Infinity])
+		Description:
+			Initializes a new ray with the specified parameters
+		Parameters:
+			pos[vec2]: the starting point of the ray, defaults to new vec2() if left unspecified
+			angle[Number]: the angle that the ray is pointing in, defaults to 0 if not specified
+			length[Number]: how long the ray is in pixels, defaults to Infinity if not specified
+		
+Object methods:
+	(constructor): see above
+	getPos()
+		Description:
+			returns the starting point, or origin, of the ray
+		Returns: [vec2]
+	
+	setPos(pos[vec2])
+		Description:
+			sets the starting point of the ray
+		Parameters:
+			pos[vec2]: the position to set as the starting point
+		
+	getEndPos()
+		Description:
+			returns the end point of the ray, calculated using the angle and length
+		Returns: [vec2]
+	
+	setEndPos(pos[vec2])
+		Description:
+			sets the end point of the ray by modifying the angle and length
+		Parameters:
+			pos[vec2]: the position to set as the end point of the ray
+		
+	getAngle()
+		Description:
+			returns the angle that the ray facing
+		Returns: [Number]
+		
+	setAngle(angle[Number])
+		Description:
+			sets the angle that the ray is facing
+		Parameters:
+			angle[Number]: the angle to set
+		
+	getSlope()
+		Description:
+			returns the slope of the ray, as in the slope from the ray's slope-intercept form. "m" where y=m*x+b
+		Returns: [Number]
+		
+	getOffsetY()
+		Description:
+			returns the y-offset of the ray, as in the y-offset from the ray's slope-intercept form. "b" where y=m*x+b
+		Returns: [Number]
+		
+	getY(x[Number])
+		Description:
+			returns the y value that lies on the ray, when given 'x'. "y" where y=m*x+b
+		Returns: [Number]
+		Parameters:
+			x[Number]: the x value to test for y in y=m*x+b
+		
+	getX(y[Number])
+		Description:
+			returns the x value that lies on the ray when given 'y'. "x" where y=m*x+b
+		Returns: [Number]
+		Parameters:
+			y[Number]: the y value to test for x in y=m*x+b
+		
+	isHorizontal()
+		Description:
+			returns whether or not the ray is flat along the y-axis (horizontal) or not
+		Returns: [Boolean]
+		
+	recalculate()
+		Description:
+			recalculates the ray's slope intercept formula variables, _m, _b, and _isVertical. Should be called whenever a direct change to one of the object's private properties is modified
+	
+	containsPoint(point[vec2], leniency[Number default=0.01])
+		Description:
+			returns true if the given point lies directly on the ray, or within a specified leniency factor of the ray
+		Parameters:
+			point[vec2]: the point that's being tested for collision with the ray
+			leniency[Number]: the error factor that allows for a specified distance away from the ray
+		
+	intersection(otherRay[ray])
+		Description:
+			the intersection point between this and another ray, returns null if there is no intersection
+		Returns: [vec2]
+		Parameters:
+			otherRay[ray]: the other ray to test for intersection
+		
+	intersect_vertical(otherRay[ray]) - Note: Only works if correct conditions are met
+		Description:
+			ONLY works if this ray is vertical. the intersection point between this and another ray, null if no intersection
+		Returns: [vec2]
+		Parameters:
+			otherRay[ray]: the other ray to test for intersection
+
+	intersect_horizontal(otherRay[ray]) - Note: Only works if correct conditions are met
+		Description:
+			ONLY works if this ray is horizontal. the intersection point between this and another ray, null if no intersection
+		Returns: [vec2]
+		Parameters:
+			otherRay[ray]: the other ray to test for intersection
+
+	_intersectRayCheck(intersect[vec2], otherRay[ray]) - Note: Private method, calling this may cause unexpected results
+		Description:
+			PRIVATE method, use with caution. returns true if this and the other specified ray both contain the specified intersection point
+		Returns: [Boolean]
+		Parameters:
+			intersect[vec2]: the intersection point to test
+			otherRay[ray]: the other ray that is testing the intersection point
+	
+	polygonIntersections(poly[polygon])
+		Description:
+			gets all the intersection points and other relevant data from all the intersections that occur between the ray and the edges of the specified polygon
+		Returns: [Array(rayCollision)]
+		Parameters:
+			poly: the polygon to test for intersections
+	
+	rayCast(polygonList[Array(polygon)])
+		Description:
+			gets all the intersection points and other relevant data from all the intersections that occur between the ray and all of the specidied polygons in the polygon list
+		Returns: [Array(rayCollision)]
+		Parameters:
+			polygonList[Array(polygon)]:  the list of polygons to test for intersections
+	
+	draw(ctx[CanvasRenderingContext2D], color[String], width[Number])
+		Description:
+			renders the ray as a line
+		Parameters:
+			ctx[CanvasRenderingContext2D]: the context to render the line on
+			color[String]: the color of the line that's rendered
+			width[Number]: the width of the line that's rendered
+		
+	drawDebug(ctx, color, width)
+		Description:
+			renders the ray as a line, as well as the direction it's pointing
+		Parameters:
+			ctx[CanvasRenderingContext2D]: the context to render the line on
+			color[String]: the color of the line that's rendered
+			width[Number]: the width of the line that's rendered
+	
+Static methods:
+	ray.addPolygonRays(poly[polygon])
+		Description:
+			adds the edge rays to the specified polygon
+		Parameters:
+			poly[polygon]: the polygon to add the edge rays to
+	
+	ray.rayData(m[Number], b[Number], length[Number default=Infinity])
+		Description:
+			initializes a ray from given slope-intercept data
+		Parameters:
+			m[Number]: the slope of the ray in the slope intercept formula: y=m*x+b
+			b[Number]: the y-offset of the ray in the slope intercept formula: y=m*x+b
+			length[Number]: the length of the ray
+
+	ray.fromPoints(start[vec2], end[vec2])
+		Description:
+			creates a ray from the start point that extends to the end point
+		Parameters:
+			start[vec2]: the starting point of the ray
+			end[vec2]: the ending point of the ray, 
+			
+Object properties: - Note: try to avoid directly modifying private properties(denoted by an _underscore) but if you do modify them, call this.recalculate()
+	length[Number]: the length of the ray, in pixels
+	
+	_parentPoly[polygon]: 
+		the polygon that this ray belongs to, if it is an edge ray
+	
+	_origin[vec2]: - Private
+		the starting point of the ray
+	
+	_m[Number]: - Private
+		the slope of the ray
+	
+	_b[Number]: - Private
+		the y-offset of the ray
+	
+	_isVertical[Boolean]: - Private
+		if the ray is aligned along the x-axis(Vertical) or not
+	
+	_angle[Number]: - Private
+		the angle tht the ray is pointing
+	

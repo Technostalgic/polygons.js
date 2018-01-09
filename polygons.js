@@ -459,6 +459,7 @@ class box{
 class ray{
 	constructor(pos = new vec2(), angle = 0, length = Infinity){
 		this.length = length;
+		
 		//do not directly modify _private _variables:
 		this._parentPoly = null;
 		this._origin = pos;

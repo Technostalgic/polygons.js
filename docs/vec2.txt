@@ -1,10 +1,13 @@
 vec2:
 	An object used to hold information and do calculations about 2D vectors. Usually used to represent a point in space.
 	
-constructor:
+Constructor:
 	new vec2(x[Number default=0], y[Number default='x'])
 		Description: 
 			initializes a new vec2 object with the specified x and y values. If x in not specified, it defaults to 0. if y is not specified, it defaults to whatever x is.
+		Parameters:
+			x[Number]: sets the x-value of the new vec2, defaults to 0 if not specified
+			y[Number]: sets the y-value of the new vec2, defaults to 'x' if not specified
 	
 Object Methods:
 	(constructor): see above
