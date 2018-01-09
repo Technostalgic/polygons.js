@@ -1,8 +1,10 @@
 The provided documentation is for release 0.8.0
 
 polygons.js:
-	A library intended to make polygon based collision detection easier. The library includes many useful data structures that can be used to define polygon shapes, define a 2d vector, cast a ray, create an axis-aligned bounding box, and test for collisions between each of these objects.
-	polygons.js is intended to be simpler and more optomized than other libraries that perform similar tasks, such as Clipper, as such, the library comes with more limitation than these more complex libraries. For instance, polygon.js only suports single continuous polygon shapes: currently there is no support for holes, or polygons with multiple parts.
+	Version: 0.8.0
+	Description:
+		A library intended to make polygon based collision detection easier. The library includes many useful data structures that can be used to define polygon shapes, define a 2d vector, cast a ray, create an axis-aligned bounding box, and test for collisions between each of these objects.
+		polygons.js is intended to be simpler and more optomized than other libraries that perform similar tasks, such as Clipper, as such, the library comes with more limitations than these higher complexity libraries. For instance, polygon.js only suports single continuous polygon shapes: currently there is no support for holes, or polygons with multiple parts.
 
 Global methods:
 	wrapValue(value[Number], max[Number])

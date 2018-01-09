@@ -453,7 +453,7 @@ class box{
 		return "box: l:" + this.left() +
 			" r:" + this.right() + 
 			" t:" + this.top() + 
-			" b:"	+ this.bottom();
+			" b:" + this.bottom();
 	}
 }
 class ray{

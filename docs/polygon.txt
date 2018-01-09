@@ -1,0 +1,137 @@
+polygon:
+	an object that describes a simple 2d shape. Useful for testing collision against rays or other polygons
+	
+Constructor:
+	new polygon()
+		Description:
+			initializes a new empty polygon object
+
+Static methods:
+	polygon.Rectangle(width[Number], height[Number default='width'])
+		Description:
+			creates a new rectangular polygon shape
+		Returns: [polygon]
+		Parameters:
+			width[Number]: the width of the rectangle
+			height[Number]: the height of the rectangle, defaults to 'width' if not specified
+	
+	polygon.Circle(radius[Number], segments[Number default=12])
+		Description:
+			creates a new circular polygon
+		Returns: [polygon]
+		Parameters:
+			radius[Number]: the radius of the circle
+			segments[Number]: the amount of segments the circle has, defaults to 12 if not specified
+
+Object methods:
+	(constructor): see above
+	getBoundingBox()
+		Description:
+			returns the axis aligned bounding box that surrounds the polygon, 'this._boundingbox'
+		Returns:[box]
+		
+	updateBoundingBox()
+		Description:
+			updates the '_boundingbox', usually this is only called internally, but if any private variables are modified directly, this needs to be called after 'updateAbsVerts()'
+		
+	getAbsoluteVertices()
+		Description:
+			returns a list of the absolute vertices of the polygon after they have been transformed by all the polygon's transformation variables (_position, _scale, _rotation, _flipped), 'this._absVerts'
+		Returns:[Array(vec2)]
+		
+	getAbsVerts()
+		Description:
+			shorthand for 'getAbsoluteVertices()'
+		Returns:[Array(vec2)]
+		
+	updateAbsVerts()
+		Description:
+			updates the '_absVerts', usually this is only called internally, but if any private variable are modified directly, this needs to be called, and then 'updateBoundingBox()' needs to be called
+		
+	setVerts(vertices[Array(vec2)])
+		Description:
+			sets the local vertices that define the polygon's shape (modifies 'this._points')
+		Parameters:
+			vertices[Array(vec2)]: an array of vectors to set as the new local set of vertices that define the polygon
+		
+	getVerts()
+		Description:
+		Returns:[]
+		
+	setAbsVerts(absVerts[Array(vec2)])
+		Description:
+		Parameters:
+	
+	transformPoints(translate[vec2], scale[Number default=1], rotate[Number default=0])
+		Description:
+		Parameters:
+		
+	flipPoints(vertically[Boolean default=true], horizontally[Boolean default=false])
+		Description:
+		Parameters:
+	
+	getPos()
+		Description:
+		Returns:[]
+		
+	setPos(pos[vec2])
+		Description:
+		Parameters:
+		
+	movePos(translation[vec2])
+		Description:
+		Parameters:
+		
+	getScale()
+		Description:
+		Returns:[]
+		
+	setScale(scale[vec2])
+		Description:
+		Parameters:
+		
+	getRot()
+		Description:
+		Returns:[]
+		
+	setRot(angle[Number])
+		Description:
+		Parameters:
+		
+	getFlipped()
+		Description:
+		Returns:[]
+		
+	setFlipped(flipped[Boolean default=true])
+		Description:
+		Parameters:
+		
+	getEdgeRays()
+		Description:
+		Returns:[]
+	
+	containsPoint(point[vec2], testAng[Number default=0.1])
+		Description:
+		Parameters:
+		
+	worldPointToLocal(position[vec2])
+		Description:
+		Returns:[]
+		Parameters:
+		
+	polygonIntersections(poly[polygon])
+		Description:
+		Returns:[]
+		Parameters:
+	
+	drawOutline(ctx[CanvasRenderingContext2D], color[String default="#888"], thickness[Number default=1])
+		Description:
+		Parameters:
+		
+	drawFill(ctx[CanvasRenderingContext2D], color[String default="#888"])
+		Description:
+		Parameters:
+	
+	toString()
+		Description:
+		Returns:[]
