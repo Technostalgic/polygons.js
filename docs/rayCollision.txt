@@ -1,0 +1,30 @@
+rayCollision:
+	An object that is used for storing information about raycasting collisions such as the intersect point, the intersecting ray and other useful information.
+	
+Constructor:
+	new rayCollision(collisionPoint[vec2], rayCasted[ray default=null], rayTarget[ray default=null], polyTarget[polygon default=null], vertIndex[Number default=null])
+		Description:
+			initializes a new rayCollision object with the given data
+		Parameters:
+			collisionPoint[vec2]: sets the rayCollision's 'intersection' field
+			rayCasted[ray]: sets the rayCollision's 'rayCasted' field
+			rayTarget[ray]: sets the rayCollision's 'rayTarget' field
+			polyTarget[polygon]: sets the rayCollision's 'polygonTarget' field
+			vertIndex[Number]: sets the rayCollision's 'vertexIndex' field
+			
+Object properties:
+	polygonTarget[polygon]:
+		references the polygon that the edge ray belongs to that's being tested against the casted ray (if 'rayTarget' is an edge ray on a polygon)
+		
+    rayCasted[ray]:
+		reference to the ray that was originally casted
+		
+    rayTarget[ray]:
+		reference to the ray that the raycast was testing against
+		
+    intersection[vec2]:
+		the intersection point between the two rays
+		
+    vertexIndex[Number]:
+		the edge index of the edge ray that's being tested against the casted ray (if 'rayTarget' is an edge ray on a polygon)
+		
