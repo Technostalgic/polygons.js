@@ -1,0 +1,80 @@
+box:
+	an object used mainly for defining axis aligned bounding boxes around polygon shapes. Axis aligned bounding boxes are essential for mid-phase collision optimization.
+
+Constructor:
+	new box();
+	
+Static methods:
+	
+Object methods:
+	(constructor): see above
+	top()
+		Description:
+			returns the y-position of top side of the box
+		Returns: [Number]
+		
+	bottom()
+		Description:
+			returns the y-position of bottom side of the box
+		Returns: [Number]
+		
+	left()
+		Description:
+			returns the x-position of left side of the box
+		Returns: [Number]
+		
+	right()
+		Description:
+			returns the x-position of right side of the box
+		Returns: [Number]
+		
+	topLeft()
+		Description:
+			returns the position of the box's top-left corner
+		Returns: [vec2]
+		
+	bottomRight()
+		Description:
+			returns the position of the box's bottom-right corner
+		Returns: [vec2]
+		
+	center()
+		Description:
+			returns the position of the center of the box
+		Returns: [vec2]
+		
+	extended(other[box])
+		Description:
+			returns a larger or equally sized box that overlaps both this entire box and the entire specified box
+		Returns: [box]
+		Parameters:
+			other[box]: the box to extend this box over
+		
+	containsPoint(point[vec2])
+		Description:
+			tells whether or not a point lies inside of this box (inclusive)
+		Returns: [Boolean]
+		Parameters:
+			point[vec2]: the point to test collision with
+	
+	testIntersect(testray[ray])
+		Description:
+			a very quick check to see whether or not a box is intersecting with a ray, only returns true or false, no intersection point or other data is returned
+		Returns: [Boolean]
+		Parameters:
+			testray[ray]: the ray to check for intersection with
+	
+	drawOutline(ctx[CanvasRenderingContext2D], color[String default="#888"], thickness[Number default=1])
+		Description:
+			renders the outline of this box
+		Parameters:
+			ctx[CanvasRenderingContext2D]: the context for the outline to be rendered onto
+			color[String]: the color that the outline will be drawn as
+			thickness[Number]: how many pixels wide the outline will be rendered as
+		
+	drawFill(ctx[CanvasRenderingContext2D], color[String default="#888"])
+		Description:
+			renders the filled box
+		Parameters:
+			ctx[CanvasRenderingContext2D]: the context for the box to be rendered onto
+			color[String]: the color that the box will be drawn as
