@@ -9,7 +9,29 @@ Constructor:
 			pos[vec2]: the starting point of the ray, defaults to new vec2() if left unspecified
 			angle[Number]: the angle that the ray is pointing in, defaults to 0 if not specified
 			length[Number]: how long the ray is in pixels, defaults to Infinity if not specified
-		
+			
+Static methods:
+	ray.addPolygonRays(poly[polygon])
+		Description:
+			adds the edge rays to the specified polygon
+		Parameters:
+			poly[polygon]: the polygon to add the edge rays to
+	
+	ray.rayData(m[Number], b[Number], length[Number default=Infinity])
+		Description:
+			initializes a ray from given slope-intercept data
+		Parameters:
+			m[Number]: the slope of the ray in the slope intercept formula: y=m*x+b
+			b[Number]: the y-offset of the ray in the slope intercept formula: y=m*x+b
+			length[Number]: the length of the ray
+
+	ray.fromPoints(start[vec2], end[vec2])
+		Description:
+			creates a ray from the start point that extends to the end point
+		Parameters:
+			start[vec2]: the starting point of the ray
+			end[vec2]: the ending point of the ray, 
+			
 Object methods:
 	(constructor): see above
 	getPos()
@@ -77,7 +99,7 @@ Object methods:
 	recalculate()
 		Description:
 			recalculates the ray's slope intercept formula variables, _m, _b, and _isVertical. Should be called whenever a direct change to one of the object's private properties is modified
-	
+
 	containsPoint(point[vec2], leniency[Number default=0.01])
 		Description:
 			returns true if the given point lies directly on the ray, or within a specified leniency factor of the ray
@@ -128,7 +150,7 @@ Object methods:
 		Parameters:
 			polygonList[Array(polygon)]:  the list of polygons to test for intersections
 	
-	draw(ctx[CanvasRenderingContext2D], color[String], width[Number])
+	draw(ctx[CanvasRenderingContext2D], color[String default="#f00"], width[Number default=1])
 		Description:
 			renders the ray as a line
 		Parameters:
@@ -136,36 +158,14 @@ Object methods:
 			color[String]: the color of the line that's rendered
 			width[Number]: the width of the line that's rendered
 		
-	drawDebug(ctx, color, width)
+	drawDebug(ctx[CanvasRenderingContext2D], color[String default="#f00"], width[Number default=1])
 		Description:
 			renders the ray as a line, as well as the direction it's pointing
 		Parameters:
 			ctx[CanvasRenderingContext2D]: the context to render the line on
 			color[String]: the color of the line that's rendered
 			width[Number]: the width of the line that's rendered
-	
-Static methods:
-	ray.addPolygonRays(poly[polygon])
-		Description:
-			adds the edge rays to the specified polygon
-		Parameters:
-			poly[polygon]: the polygon to add the edge rays to
-	
-	ray.rayData(m[Number], b[Number], length[Number default=Infinity])
-		Description:
-			initializes a ray from given slope-intercept data
-		Parameters:
-			m[Number]: the slope of the ray in the slope intercept formula: y=m*x+b
-			b[Number]: the y-offset of the ray in the slope intercept formula: y=m*x+b
-			length[Number]: the length of the ray
 
-	ray.fromPoints(start[vec2], end[vec2])
-		Description:
-			creates a ray from the start point that extends to the end point
-		Parameters:
-			start[vec2]: the starting point of the ray
-			end[vec2]: the ending point of the ray, 
-			
 Object properties: - Note: try to avoid directly modifying private properties(denoted by an _underscore) but if you do modify them, call this.recalculate()
 	length[Number]: the length of the ray, in pixels
 	

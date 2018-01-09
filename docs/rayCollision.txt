@@ -1,5 +1,5 @@
 rayCollision:
-	An object that is used for storing information about raycasting collisions such as the intersect point, the intersecting ray and other useful information.
+	an object that is used for storing information about raycasting collisions such as the intersect point, the intersecting ray and other useful information.
 	
 Constructor:
 	new rayCollision(collisionPoint[vec2], rayCasted[ray default=null], rayTarget[ray default=null], polyTarget[polygon default=null], vertIndex[Number default=null])

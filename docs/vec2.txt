@@ -8,6 +8,29 @@ Constructor:
 		Parameters:
 			x[Number]: sets the x-value of the new vec2, defaults to 0 if not specified
 			y[Number]: sets the y-value of the new vec2, defaults to 'x' if not specified
+
+Static methods:
+	vec2.average(points[Array(vec2)])
+		Description:
+			returns the average of all the vectors in the specified list
+		Returns: [vec2]
+		Parameters:
+			points[Array(vec2)]: an array of vectors to find the average of
+
+	vec2.fromAnonObj(vec)
+		Description:
+			returns a vec2 object derived from an anonymous object with x and y fields
+		Returns: [vec2]
+		Parameters:
+			vec[Anonymous Object]: an anonymous object with x and y fields
+
+	vec2.fromAng(angle[Number], magnitude[Number default=1])
+		Description:
+			returns a vector with the specified angle/direction and magnitude
+		Returns: [vec2]
+		Parameters:
+			angle[Number]: the angle/direction that the new vector will point
+			magnitude[Number]: the magnitude that the new vector will have
 	
 Object Methods:
 	(constructor): see above
@@ -85,29 +108,6 @@ Object Methods:
 		Description:
 			converts the vector into a readable format
 		Returns: [String]
-	
-Static methods:
-	vec2.average(points[Array(vec2)])
-		Description:
-			returns the average of all the vectors in the specified list
-		Returns: [vec2]
-		Parameters:
-			points[Array(vec2)]: an array of vectors to find the average of
-
-	vec2.fromAnonObj(vec)
-		Description:
-			returns a vec2 object derived from an anonymous object with x and y fields
-		Returns: [vec2]
-		Parameters:
-			vec[Anonymous Object]: an anonymous object with x and y fields
-
-	vec2.fromAng(angle[Number], magnitude[Number default=1])
-		Description:
-			returns a vector with the specified angle/direction and magnitude
-		Returns: [vec2]
-		Parameters:
-			angle[Number]: the angle/direction that the new vector will point
-			magnitude[Number]: the magnitude that the new vector will have
 	
 Object Properties:
 	x[Number]:
