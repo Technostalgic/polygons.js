@@ -1,0 +1,114 @@
+vec2:
+	An object used to hold information and do calculations about 2D vectors. Usually used to represent a point in space.
+	
+constructor:
+	new vec2(x[Number default=0], y[Number default='x'])
+		Description: 
+			initializes a new vec2 object with the specified x and y values. If x in not specified, it defaults to 0. if y is not specified, it defaults to whatever x is.
+	
+Object Methods:
+	(constructor): see above
+	normalized(magnitude[number default=1])
+		Description:
+			returns a vector pointing in the same direction but with an altered magnitude
+		Returns: [vec2]
+		Parameters:
+			magnitude[Number]: A number representing the new vector's magnitude, defaults to 1 if not specified
+
+	inverted()
+		Description:
+			returns a negated version of this vector
+		Returns: [vec2]
+
+	multpily(factor[Number])
+		Description:
+			returns a new vector with x and y values equal to this vector multiplied by the specified factor
+		Returns: [vec2]
+		Parameters:
+			factor[Number]: the factor to multiply the x and y values of this vector by
+
+	plus(vect2[vec2])
+		Description:
+			adds this and another vector together and returns the result
+		Returns: [vec2]
+		Parameters:
+			vect2[vec2]: the other vector to add this to
+
+	minus(vect2[vec2])
+		Description:
+			subtracts another vector from this and returns the rsult
+		Returns: [vec2]
+		Parameters:
+			vect2[vec2]: the vector to subtract from this
+
+	equals(vect2[vec2], leniency[Number default=0])
+		Description:
+			tests for equality by a rectengular distance check. If this vector and the specified vector have a rectangular distance of less than 'leniency', returns true. Used mostly for correcting floating point errors
+		Returns: [Boolean]
+		Parameters:
+			vect2[vec2]: the other vector to compare this to
+			leniency[Number]: the max rectangular distance that counts as "equal", defaults to 0 if not specified
+
+	direction()
+		Description:
+			returns the angle that this vector is pointing in, in radians
+		Returns: [Number]
+
+	directionTo(vec[vec2])
+		Description:
+			returns the direction, in radians, that this vector would need to move in, in order to reach another specified vector
+		Returns: [Number]
+		Parameters:
+			vec[vec2]: the other specified vector 
+
+	distance(vect2[vec2 default=null])
+		Description:
+			returns the distance between this and another specified vector. If no other vector is specified, returns the magnitude of this vector
+		Returns: [Number]
+		Parameters:
+			vect2[vec2]: the other vector to test distance between
+
+	clone()
+		Description:
+			returns a new instance of this vector with the same x anv y values
+		Returns: [vec2]
+
+	toAnonObj()
+		Description:
+			converts the vector into an anonymous object with x and y fields equal to the value of the x and y properties of this vector
+		Returns: [Anonymous Object]
+
+	toString()
+		Description:
+			converts the vector into a readable format
+		Returns: [String]
+	
+Static methods:
+	vec2.average(points[Array(vec2)])
+		Description:
+			returns the average of all the vectors in the specified list
+		Returns: [vec2]
+		Parameters:
+			points[Array(vec2)]: an array of vectors to find the average of
+
+	vec2.fromAnonObj(vec)
+		Description:
+			returns a vec2 object derived from an anonymous object with x and y fields
+		Returns: [vec2]
+		Parameters:
+			vec[Anonymous Object]: an anonymous object with x and y fields
+
+	vec2.fromAng(angle[Number], magnitude[Number default=1])
+		Description:
+			returns a vector with the specified angle/direction and magnitude
+		Returns: [vec2]
+		Parameters:
+			angle[Number]: the angle/direction that the new vector will point
+			magnitude[Number]: the magnitude that the new vector will have
+	
+Object Properties:
+	x[Number]:
+		the x-value, or horizontal value, of the vector
+
+	y[Number]:
+		the y-value, or vertical value, of the vector

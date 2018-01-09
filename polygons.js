@@ -1,4 +1,5 @@
-//Created by Isaiah Smith
+//			Created by Isaiah Smith
+// http://technostalgic.tech | @technostalgicGM
 
 var enumBooleanOp = {
 		union: 0,		// or
@@ -12,7 +13,7 @@ var enumBooleanOp = {
 	also contains useful methods for doing vector math
 */
 class vec2{
-	constructor(x = 0, y = 0){
+	constructor(x = 0, y = x){
 		this.x = x;
 		this.y = y;
 	}
