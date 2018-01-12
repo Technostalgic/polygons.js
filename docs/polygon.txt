@@ -28,7 +28,7 @@ Object methods:
 	getBoundingBox()
 		Description:
 			returns the axis aligned bounding box that surrounds the polygon, 'this._boundingbox'
-		Returns:[box]
+		Returns: [box]
 		
 	updateBoundingBox()
 		Description:
@@ -37,12 +37,12 @@ Object methods:
 	getAbsoluteVertices()
 		Description:
 			returns a list of the absolute vertices of the polygon after they have been transformed by all the polygon's transformation variables (_position, _scale, _rotation, _flipped), 'this._absVerts'
-		Returns:[Array(vec2)]
+		Returns: [Array(vec2)]
 		
 	getAbsVerts()
 		Description:
 			shorthand for 'getAbsoluteVertices()'
-		Returns:[Array(vec2)]
+		Returns: [Array(vec2)]
 		
 	updateAbsVerts()
 		Description:
@@ -50,88 +50,156 @@ Object methods:
 		
 	setVerts(vertices[Array(vec2)])
 		Description:
-			sets the local vertices that define the polygon's shape (modifies 'this._points')
+			sets the local vertices that define the polygon's pre-transformed shape (modifies 'this._points')
 		Parameters:
 			vertices[Array(vec2)]: an array of vectors to set as the new local set of vertices that define the polygon
 		
 	getVerts()
 		Description:
-		Returns:[]
+			returns the a list of the local vertices that define the polygon's pre-transformed shape
+		Returns: [Array(ve2)]
 		
 	setAbsVerts(absVerts[Array(vec2)])
 		Description:
+			sets the local vertices and reverse-tranforms them in such a way that the transformed vertices match the specified vertices, i.e. if you call 'setAbsVerts()' and pass a list of points that represent shapeA, as long as you don't change the polygon's transform variables at all, if you then observe the polygon's shape, it will look exactly the same as shapeA that was specified when the function was called
 		Parameters:
+			absVerts[Aray(vec2)]: list of vertices that represent the shape to set the polygon to
 	
 	transformPoints(translate[vec2], scale[Number default=1], rotate[Number default=0])
 		Description:
+			transform's the local vertices of the polygon without changing the polygon's transform variables at all
 		Parameters:
+			translate[vec2]: the translation (position shift) to apply to the local vertices
+			scale[Number]: with a number greater than 1, the local vertices with expand away from the polygon's origin, with a number below 1, they will shrink towards the origin. Defaults to 1 if left unspecified
+			rotate[Number]:pre-transformed
 		
 	flipPoints(vertically[Boolean default=true], horizontally[Boolean default=false])
 		Description:
+			flips the local vertices across an axis
 		Parameters:
+			vertically[Boolean]: if true, local vertices are flipped across the y-axis (x = 1 becomes x = -1), defaults to true if left unspecified
+			horizontally[Boolean]: if true, local vertices are flipped across the x-axis (y = 1 becomes y = -1), defaults to false if left unspecified
 	
 	getPos()
 		Description:
-		Returns:[]
+			returns the translation vector that is applied to the local vertices when calculating the absolute vertices
+		Returns: [vec2]
 		
 	setPos(pos[vec2])
 		Description:
+			sets the translation vector that is applied to the local vertices when calculating the absolute vertices
 		Parameters:
+			pos[vec2] the translation vector to set the polygon to
 		
 	movePos(translation[vec2])
 		Description:
+			modifies the translation vector that is applied to the local vertices when calculating the absolute vertices by addind the specified vector to the current translation vector
 		Parameters:
+			translation[vec2]: the vector to add to the polygon's current translation vector
 		
 	getScale()
 		Description:
-		Returns:[]
+			returns the polygon's scaling factor that is applied to the local vertices when calculating the absolute vertices. the scaling factor defines the distance ratio from the polygon's origin that an absolute vertex should have as compared to the corresponding local vertex
+		Returns: [Number]
 		
 	setScale(scale[vec2])
 		Description:
+			sets the polygon's scaling factor that is applied to the local vertices when calculating the absolute vertices. the scaling factor defines the distance ratio from the polygon's origin that an absolute vertex should have as compared to the corresponding local vertex
 		Parameters:
+			scale[vec2]: the scaling factor to set to the polygon
 		
 	getRot()
 		Description:
-		Returns:[]
+			gets the rotation that is applied to the local vertices when calculating the absolute vertices
+		Returns: [number]
 		
 	setRot(angle[Number])
 		Description:
+			sets the rotation that is applied to the local vertices when calculating the absolute vertices
 		Parameters:
+			angle[Number]: rotation angle to set to the polygon
 		
 	getFlipped()
 		Description:
-		Returns:[]
+			returns the value of '_flipped', a private variable that determines whether or not the local vertices should be flipped over the y-axis when calculating the absolute vertices
+		Returns: [Boolean]
 		
 	setFlipped(flipped[Boolean default=true])
 		Description:
+			sets the value of '_flipped', a private variable that determines whether or not the local vertices should be flipped over the y-axis when calculating the absolute vertices
 		Parameters:
+			flipped[Boolean]: whether or not the local vertices should be flipped, defaults to true if unspecified
 		
 	getEdgeRays()
 		Description:
-		Returns:[]
+			returns an array of ray objects that represent the edges conneting the absolute vertices of the polygon together
+		Returns: [Array[ray]]
 	
 	containsPoint(point[vec2], testAng[Number default=0.1])
 		Description:
+			whether or not a specified point lies inside of the polygon
 		Parameters:
+			point[vec2]: the point to test for collision with the polygon
+			testAng[Number]: the way that the polygon determines that a point is inside it or not is done by casting a ray. the ray is casted from the specified point to a location outside of the polygon's bounding box. The intersections from the ray vs the polygon are then counted, if there are an even amount of intersections, the point is not inside the polygon, if there are an odd amount of intersections, the point is inside. 'testAng' is the direction from the point that the ray is casted, generally it shouldn't make much of a difference, as long as it's NOT set to a multiple of pi/4 (the ray can't be axis aligned)
 		
 	worldPointToLocal(position[vec2])
 		Description:
-		Returns:[]
+			takes a world coordinate and returns what the coordinate would be if reverse-transformed through the polygon's transformation variables. i.e. if an absolute vertex was passed through this function, a local vertex would come out
+		Returns: [vec2]
 		Parameters:
+			position[vec2]: the absolute coordinate to convert into a local coordinate
 		
 	polygonIntersections(poly[polygon])
 		Description:
-		Returns:[]
+			returns a list of intersections that occur between this and another polygon
+		Returns: [Array[rayCollision]]
 		Parameters:
+			poly[polygon]: the other polygon to test for collision
 	
 	drawOutline(ctx[CanvasRenderingContext2D], color[String default="#888"], thickness[Number default=1])
 		Description:
+			renders the outline of the polygon to the specified context
 		Parameters:
+			ctx[CanvasRenderingContext2D]: the canvas rendering context to render the outine to
+			color[String]: the color that the ouline will be drawn as, defaults to "#888" (gray)
+			thickness[Number]: how thick in pixels the outline will be, defaults to 1
 		
 	drawFill(ctx[CanvasRenderingContext2D], color[String default="#888"])
 		Description:
+			renders the fill of the polygon to the specified context
 		Parameters:
+			ctx[CanvasRenderingContext2D]: the canvas rendering context to render the filled polygon to
+			color[String]: the color that the fill will be drawn as, defaults to "#888" (gray)
 	
 	toString()
 		Description:
-		Returns:[]
+			attempts to create a readable format of the polygon
+		Returns: [String]
+		
+Object properties:  - Note: try to avoid directly modifying private properties(denoted by an _underscore) but if you do have to modify them, call this.updateAbsVerts() and then this.updateBoundingBox()
+	parent[Undefined]: 
+		not currently used for anything. It was initially meant to be an empty variable so that the user of this library could store whatever they want here, but that's kind of pointless because object fields in javascript can be tacked on outside of the object's constructor
+	
+	_points[Array(vec2)]:
+		the local vertices of the polygon. They define the basic shape that the polygon should be. However, translation, scaling, and rotational tranformations are applied to calculate the absolute vertices of the polygon
+	
+	_position[vec2]:
+		the translaction vector to apply to the local vertices to calculate the absolute vertices. Use this.getPos() instead of directly referencing this variable
+	
+	_scale[Number]:
+		the scaling factor tot apply to the local vertices to calculate the absolute vertices. Use this.getScale() instead of directly referencing this variable
+	
+    _rotation[Number]:
+		the amount in radians that a local vertex is rotated around the polygon's origin to calculate the absolute vertex. Use this.getRot() instead of directly referencing this variable
+	
+    _absVerts[Array(vec2)]:
+		the absolute vertices that are derived from the transformed local vertices, usually the value of this is 'null' until this.updateAbsVerts() is called. Use this.getAbsVerts() or this.getAbsoluteVertices() to safely retrieve an array of the absolute vertices
+	
+    _boundingbox[box]:
+		the outer bounds of the absolute vertices, usually the value of this is null. use this.getBoundingBox() to safely retrieve bounding box data
+	
+    _flipped[Boolean]:
+		whether or not the local points should be flipped across the y-axis (x values are negated) to calculate the absolute vertices
+	
+    _rays[Array(ray)]:
+		an array of ray objects that represent the edges connecting the polygon's absolute vertices together. Usually the value of this variable is null, use this.getEdgeRays() to safely retrieve an array of edges

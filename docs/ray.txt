@@ -167,7 +167,8 @@ Object methods:
 			width[Number]: the width of the line that's rendered
 
 Object properties: - Note: try to avoid directly modifying private properties(denoted by an _underscore) but if you do modify them, call this.recalculate()
-	length[Number]: the length of the ray, in pixels
+	length[Number]: 
+		the length of the ray, in pixels
 	
 	_parentPoly[polygon]: 
 		the polygon that this ray belongs to, if it is an edge ray
