@@ -280,7 +280,8 @@ class polygon{
 		var edges = this.getEdgeRays();
 		var oEdges = poly.getEdgeRays();
 		for(var i = 0;i < edges.length;i += 1){
-			cols = cols.concat(edges[i].polygonCollision(poly));
+			console.log(edges[i]);
+			cols = cols.concat(edges[i].polygonIntersections(poly));
 		}
 		return cols;
 	}
