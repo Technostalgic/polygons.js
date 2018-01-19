@@ -1,4 +1,4 @@
-#polygons.js v0.8.0
+# polygons.js v0.8.0
 
 ## documentation/examples:
 
