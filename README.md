@@ -1,6 +1,8 @@
-<h1>polygons.js</h1> v0.8.0
+#polygons.js v0.8.0
 
-documentation/examples
+## documentation/examples:
+
+documentation and examples:  
 http://docs.technostalgic.tech/libs/polygons.js/v0.8.0/index.html
 
 ## Description
