@@ -1,4 +1,8 @@
 # polygons.js
+v0.8.0
+
+documentation/examples:
+http://docs.technostalgic.tech/libs/polygons.js/v0.8.0/index.html
 
 A small but useful barebones javascript library used for rendering polygons and doing other polygon maths
 
